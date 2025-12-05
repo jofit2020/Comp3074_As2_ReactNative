@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
+import LabeledInput from "../components/LabeledInput";
 
 const API_URL = "https://api.freecurrencyapi.com/v1/latest";
 //  real key from https://freecurrencyapi.com
@@ -122,6 +123,15 @@ export default function MainScreen() {
           ))}
         </Picker>
       </View>
+
+      {/* Amount input */}
+      <LabeledInput
+        label="Amount"
+        value={amount}
+        onChangeText={setAmount}
+        keyboardType="numeric"
+        placeholder="1"
+      />
 
       {errorMsg !== "" && <Text style={styles.errorText}>{errorMsg}</Text>}
 
