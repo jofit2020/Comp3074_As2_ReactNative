@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function AboutScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>About This App</Text>
+      <Text style={styles.title}>Comp3074 Assignment -2</Text>
 
       <Text style={styles.label}>Student Name:</Text>
       <Text style={styles.value}>Fitsum Asgedom</Text>
@@ -23,34 +24,3 @@ export default function AboutScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 18,
-    backgroundColor: "#ffffff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  label: {
-    fontWeight: "600",
-    marginTop: 8,
-  },
-  value: {
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginTop: 20,
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 14,
-    lineHeight: 20,
-  },
-});
