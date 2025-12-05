@@ -1,4 +1,4 @@
-import { Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function LabeledInput({
   label,
@@ -20,6 +20,7 @@ export default function LabeledInput({
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     marginBottom: 12,
