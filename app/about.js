@@ -24,3 +24,34 @@ export default function AboutScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 18,
+    backgroundColor: "#ffffff",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  label: {
+    fontWeight: "600",
+    marginTop: 8,
+  },
+  value: {
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginTop: 20,
+    marginBottom: 8,
+  },
+  description: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+});
