@@ -1,12 +1,18 @@
 // app/index.js
 import { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import LabeledInput from "../components/LabeledInput";
 
 // API constants (we'll use them later for real fetch)
 const API_URL = "https://api.freecurrencyapi.com/v1/latest";
-// ⚠️ For GitHub, consider replacing your real key with a placeholder
-const API_KEY = "YOUR_API_KEY_HERE";
+//
+const API_KEY = "fca_live_DWLdxHXfEC8RVmaXpEmWkXv8mwUVM5kcmlMNvWql";
 
 export default function MainScreen() {
   const [amount, setAmount] = useState("1"); // default amount
@@ -16,8 +22,9 @@ export default function MainScreen() {
 
   const [exchangeRate, setExchangeRate] = useState(null);
   const [convertedAmount, setConvertedAmount] = useState(null);
+  const [loading, setLoading] = useState(false); // NEW
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
     const amt = parseFloat(amount);
     const base = baseCurrency.trim().toUpperCase();
     const dest = destCurrency.trim().toUpperCase();
@@ -46,17 +53,27 @@ export default function MainScreen() {
       return;
     }
 
-    // For now, just simulate a rate instead of calling the API
-    const fakeRate = 0.75;
-    const fakeConverted = amt * fakeRate;
+    // show loading indicator
+    setLoading(true);
 
-    setExchangeRate(fakeRate);
-    setConvertedAmount(fakeConverted);
+    try {
+      // For now, still simulate a rate instead of real API call
+      const fakeRate = 0.75;
+      const fakeConverted = amt * fakeRate;
 
-    console.log("Ready to call API:", {
-      url: API_URL,
-      key: API_KEY ? "***hidden***" : "no-key",
-    });
+      // you could even simulate a delay:
+      // await new Promise(resolve => setTimeout(resolve, 500));
+
+      setExchangeRate(fakeRate);
+      setConvertedAmount(fakeConverted);
+
+      console.log("Would call API here with:", {
+        url: API_URL,
+        key: API_KEY ? "***hidden***" : "no-key",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -87,10 +104,18 @@ export default function MainScreen() {
 
       {errorMsg !== "" && <Text style={styles.errorText}>{errorMsg}</Text>}
 
-      <Button title="Convert" onPress={handleConvert} />
+      {loading && (
+        <ActivityIndicator size="large" style={{ marginVertical: 10 }} />
+      )}
+
+      <Button
+        title={loading ? "Converting..." : "Convert"}
+        onPress={handleConvert}
+        disabled={loading}
+      />
 
       {exchangeRate !== null && convertedAmount !== null && (
-        <View style={styles.resultContainer}>
+        <View className="result" style={styles.resultContainer}>
           <Text style={styles.resultText}>
             (Fake) Exchange Rate: {exchangeRate.toFixed(4)}
           </Text>
