@@ -45,7 +45,7 @@ export default function MainScreen() {
 
     if (!codeRegex.test(dest)) {
       setErrorMsg(
-        "Destination currency must be a 3-letter uppercase code (e.g. USD, EUR)."
+        "Destination currency must be a 3-letter uppercase code (e.g. USD, EUR,AUS)."
       );
       return;
     }
