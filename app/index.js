@@ -3,22 +3,29 @@ import { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import LabeledInput from "../components/LabeledInput";
 
+// API constants (we'll use them later for real fetch)
+const API_URL = "https://api.freecurrencyapi.com/v1/latest";
+// ⚠️ For GitHub, consider replacing your real key with a placeholder
+const API_KEY = "YOUR_API_KEY_HERE";
+
 export default function MainScreen() {
   const [amount, setAmount] = useState("1"); // default amount
   const [baseCurrency, setBaseCurrency] = useState("CAD"); // default base
   const [destCurrency, setDestCurrency] = useState("USD");
   const [errorMsg, setErrorMsg] = useState("");
 
+  const [exchangeRate, setExchangeRate] = useState(null);
+  const [convertedAmount, setConvertedAmount] = useState(null);
+
   const handleConvert = () => {
     const amt = parseFloat(amount);
     const base = baseCurrency.trim().toUpperCase();
     const dest = destCurrency.trim().toUpperCase();
 
-    // simple regex: 3 uppercase letters
     const codeRegex = /^[A-Z]{3}$/;
-
-    // reset message
     setErrorMsg("");
+    setExchangeRate(null);
+    setConvertedAmount(null);
 
     if (!codeRegex.test(base)) {
       setErrorMsg(
@@ -39,11 +46,16 @@ export default function MainScreen() {
       return;
     }
 
-    // just log for now – API logic will come later
-    console.log("Valid input. Ready to convert:", {
-      base,
-      dest,
-      amount: amt,
+    // For now, just simulate a rate instead of calling the API
+    const fakeRate = 0.75;
+    const fakeConverted = amt * fakeRate;
+
+    setExchangeRate(fakeRate);
+    setConvertedAmount(fakeConverted);
+
+    console.log("Ready to call API:", {
+      url: API_URL,
+      key: API_KEY ? "***hidden***" : "no-key",
     });
   };
 
@@ -76,6 +88,17 @@ export default function MainScreen() {
       {errorMsg !== "" && <Text style={styles.errorText}>{errorMsg}</Text>}
 
       <Button title="Convert" onPress={handleConvert} />
+
+      {exchangeRate !== null && convertedAmount !== null && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>
+            (Fake) Exchange Rate: {exchangeRate.toFixed(4)}
+          </Text>
+          <Text style={styles.resultText}>
+            (Fake) Converted Amount: {convertedAmount.toFixed(2)} {destCurrency}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -95,5 +118,17 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
     marginTop: 8,
+  },
+  resultContainer: {
+    marginTop: 16,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#4caf50",
+    backgroundColor: "#e8f5e9",
+  },
+  resultText: {
+    fontSize: 16,
+    marginBottom: 4,
   },
 });
