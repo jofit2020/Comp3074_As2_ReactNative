@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import LabeledInput from "../components/LabeledInput";
 
-// API constants (we'll use them later for real fetch)
+// API constants
 const API_URL = "https://api.freecurrencyapi.com/v1/latest";
-//
+
 const API_KEY = "fca_live_DWLdxHXfEC8RVmaXpEmWkXv8mwUVM5kcmlMNvWql";
 
 export default function MainScreen() {
@@ -22,7 +22,7 @@ export default function MainScreen() {
 
   const [exchangeRate, setExchangeRate] = useState(null);
   const [convertedAmount, setConvertedAmount] = useState(null);
-  const [loading, setLoading] = useState(false); // NEW
+  const [loading, setLoading] = useState(false);
 
   const handleConvert = async () => {
     const amt = parseFloat(amount);
@@ -30,10 +30,13 @@ export default function MainScreen() {
     const dest = destCurrency.trim().toUpperCase();
 
     const codeRegex = /^[A-Z]{3}$/;
+
+    // reset
     setErrorMsg("");
     setExchangeRate(null);
     setConvertedAmount(null);
 
+    // validation
     if (!codeRegex.test(base)) {
       setErrorMsg(
         "Base currency must be a 3-letter uppercase code (e.g. CAD)."
@@ -53,24 +56,34 @@ export default function MainScreen() {
       return;
     }
 
-    // show loading indicator
     setLoading(true);
 
     try {
-      // For now, still simulate a rate instead of real API call
-      const fakeRate = 0.75;
-      const fakeConverted = amt * fakeRate;
+      const url = `${API_URL}?apikey=${API_KEY}&base_currency=${base}&currencies=${dest}`;
+      const response = await fetch(url);
 
-      // you could even simulate a delay:
-      // await new Promise(resolve => setTimeout(resolve, 500));
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
 
-      setExchangeRate(fakeRate);
-      setConvertedAmount(fakeConverted);
+      const data = await response.json();
 
-      console.log("Would call API here with:", {
-        url: API_URL,
-        key: API_KEY ? "***hidden***" : "no-key",
-      });
+      // Expected shape: data.data = { "USD": 0.73, ... }
+      const rate = data?.data?.[dest];
+
+      if (typeof rate !== "number") {
+        throw new Error("Missing or invalid currency rate in API response.");
+      }
+
+      const converted = amt * rate;
+
+      setExchangeRate(rate);
+      setConvertedAmount(converted);
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(
+        err.message || "Something went wrong while fetching the rate."
+      );
     } finally {
       setLoading(false);
     }
@@ -115,12 +128,12 @@ export default function MainScreen() {
       />
 
       {exchangeRate !== null && convertedAmount !== null && (
-        <View className="result" style={styles.resultContainer}>
+        <View style={styles.resultContainer}>
           <Text style={styles.resultText}>
-            (Fake) Exchange Rate: {exchangeRate.toFixed(4)}
+            Exchange Rate: {exchangeRate.toFixed(4)}
           </Text>
           <Text style={styles.resultText}>
-            (Fake) Converted Amount: {convertedAmount.toFixed(2)} {destCurrency}
+            Converted Amount: {convertedAmount.toFixed(2)} {destCurrency}
           </Text>
         </View>
       )}
