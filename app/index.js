@@ -112,7 +112,7 @@ export default function MainScreen() {
       <Text style={styles.title}>Currency Converter</Text>
 
       <LabeledInput
-        label="Base Currency (e.g. CAD, USD)"
+        label="Base Currency (e.g. CAD, USD,EUR)"
         value={baseCurrency}
         onChangeText={setBaseCurrency}
         placeholder="CAD"
