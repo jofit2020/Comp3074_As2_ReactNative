@@ -11,7 +11,6 @@ import LabeledInput from "../components/LabeledInput";
 
 // API constants
 const API_URL = "https://api.freecurrencyapi.com/v1/latest";
-
 const API_KEY = "fca_live_DWLdxHXfEC8RVmaXpEmWkXv8mwUVM5kcmlMNvWql";
 
 export default function MainScreen() {
@@ -68,7 +67,7 @@ export default function MainScreen() {
 
       const data = await response.json();
 
-      // Expected shape: data.data = { "USD": 0.73, ... }
+      // Expected: data.data = { "USD": 0.73, ... }
       const rate = data?.data?.[dest];
 
       if (typeof rate !== "number") {
@@ -81,9 +80,21 @@ export default function MainScreen() {
       setConvertedAmount(converted);
     } catch (err) {
       console.error(err);
-      setErrorMsg(
-        err.message || "Something went wrong while fetching the rate."
-      );
+      const msg = err?.message || "";
+
+      if (msg.includes("Network")) {
+        setErrorMsg("Network error: please check your internet connection.");
+      } else if (msg.includes("401")) {
+        setErrorMsg("Invalid or missing API key. Please verify your API key.");
+      } else if (msg.startsWith("HTTP error")) {
+        setErrorMsg(
+          "API request failed. Please verify your currency codes and try again."
+        );
+      } else if (msg) {
+        setErrorMsg(msg);
+      } else {
+        setErrorMsg("Something went wrong while fetching the exchange rate.");
+      }
     } finally {
       setLoading(false);
     }
