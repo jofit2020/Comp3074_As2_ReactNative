@@ -35,7 +35,7 @@ export default function MainScreen() {
     setExchangeRate(null);
     setConvertedAmount(null);
 
-    // validation
+    // validation: currency code format
     if (!codeRegex.test(base)) {
       setErrorMsg(
         "Base currency must be a 3-letter uppercase code (e.g. CAD)."
@@ -50,6 +50,13 @@ export default function MainScreen() {
       return;
     }
 
+    // NEW: prevent equal currencies
+    if (base === dest) {
+      setErrorMsg("Base and destination currencies must be different.");
+      return;
+    }
+
+    // validation: amount
     if (isNaN(amt) || amt <= 0) {
       setErrorMsg("Amount must be a positive number.");
       return;
